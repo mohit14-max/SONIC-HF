@@ -2296,7 +2296,7 @@ def _launch_demo_with_fallback(demo: "gr.Blocks") -> int:
         demo.launch(
             server_name=launch_host,
             server_port=launch_port,
-            inbrowser=True,
+            inbrowser=False,
             share=launch_share,
             theme=gr.themes.Base(),
             css=SONIC_CSS,
