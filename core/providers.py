@@ -711,6 +711,10 @@ def dispatch_sonic_prompt(
         resolved_live_web_query,
         live_web_history,
     )
+    print("DEBUG dispatch runtime_preference =", runtime_preference)
+    print("DEBUG dispatch selection =", selection)
+    print("DEBUG dispatch mode =", normalized_mode)
+    print("DEBUG dispatch live_web_query =", resolved_live_web_query)
     query_type = classify_query(resolved_live_web_query)
 
     if normalized_mode == "summary":
@@ -736,15 +740,25 @@ def dispatch_sonic_prompt(
         )
 
     if query_type == QUERY_TYPE_GENERATIVE_TASK:
-        return _run_local_provider(
-            prompt_text=prompt_text,
-            system_prompt=system_prompt,
-            mode=normalized_mode,
-            runtime_used="online",
+     if selection.runtime_used == "online":
+        return _run_live_web_provider(
             user_message=resolved_live_web_query,
+            mode=normalized_mode,
+            history=live_web_history,
+            runtime_used="online",
             stream_callback=stream_callback,
             language_context=resolved_language_context,
         )
+
+    return _run_local_provider(
+        prompt_text=prompt_text,
+        system_prompt=system_prompt,
+        mode=normalized_mode,
+        runtime_used="local",
+        user_message=resolved_live_web_query,
+        stream_callback=stream_callback,
+        language_context=resolved_language_context,
+    )
 
     try:
         return _run_live_web_provider(
@@ -802,7 +816,9 @@ def ask_sonic(
     runtime_preference: str = DEFAULT_RUNTIME_PREFERENCE,
     stream_callback: Callable[[str], None] | None = None,
 ) -> dict[str, Any]:
+    print("DEBUG ask_sonic runtime_preference =",runtime_preference)
     prompt_bundle = _build_prompt_bundle(message, mode, history)
+    print("DEBUG ask_sonic mode=",prompt_bundle.mode)
     return dispatch_sonic_prompt(
         prompt_text=prompt_bundle.offline_prompt,
         system_prompt=prompt_bundle.system_prompt,
