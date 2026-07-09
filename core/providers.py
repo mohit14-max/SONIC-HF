@@ -565,17 +565,7 @@ def _run_live_web_provider(
     language_context: LanguageContext | None = None,
 ) -> dict[str, Any]:
     query_type = classify_query(user_message)
-    if query_type == QUERY_TYPE_GENERATIVE_TASK:
-        return _run_local_provider(
-            prompt_text=user_message,
-            system_prompt=get_system_prompt(mode, language_context=language_context),
-            mode=mode,
-            runtime_used=runtime_used,
-            user_message=user_message,
-            stream_callback=stream_callback,
-            language_context=language_context,
-        )
-
+    
     search_data = search_live_web(
         user_message=user_message,
         history=history,
@@ -634,15 +624,6 @@ def _run_live_web_fallback(
 ) -> dict[str, Any]:
     if stream_callback is not None:
         stream_callback(f"{ONLINE_FALLBACK_NOTICE}\n\n")
-
-    
-    local_response["notice"] = ONLINE_FALLBACK_NOTICE
-    local_response["requested_runtime"] = runtime_used
-    local_response["fallback_used"] = True
-    local_response["fallback_reason"] = fallback_reason or "online_unavailable"
-    return local_response
-
-
 def dispatch_sonic_prompt(
     prompt_text: str,
     system_prompt: str,
@@ -665,23 +646,6 @@ def dispatch_sonic_prompt(
     print("DEBUG dispatch mode =", normalized_mode)
     print("DEBUG dispatch live_web_query =", resolved_live_web_query)
     query_type = classify_query(resolved_live_web_query)
-
-    if normalized_mode == "summary":
-        return _run_local_provider(
-       
-            language_context=resolved_language_context,
-        )
-
-    if selection.runtime_used == "local":
-        return _run_local_provider(
-            prompt_text=prompt_text,
-            system_prompt=system_prompt,
-            mode=normalized_mode,
-            runtime_used="local",
-            user_message=resolved_live_web_query,
-            stream_callback=stream_callback,
-            language_context=resolved_language_context,
-        )
 
     if query_type == QUERY_TYPE_GENERATIVE_TASK:
      if selection.runtime_used == "online":
