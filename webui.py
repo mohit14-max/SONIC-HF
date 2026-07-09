@@ -2298,8 +2298,6 @@ def _launch_demo_with_fallback(demo: "gr.Blocks") -> int:
             server_port=launch_port,
             inbrowser=False,
             share=launch_share,
-            theme=gr.themes.Base(),
-            css=SONIC_CSS,
             favicon_path=str(SONIC_FAVICON_PATH) if SONIC_FAVICON_PATH.exists() else None,
         )
         return launch_port
