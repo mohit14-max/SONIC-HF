@@ -429,49 +429,6 @@ def _resolve_runtime_selection(
         provider_used="local",
     )
 
-
-def _run_local_provider(
-    prompt_text: str,
-    system_prompt: str,
-    mode: str,
-    runtime_used: str = "local",
-    user_message: str | None = None,
-    stream_callback: Callable[[str], None] | None = None,
-    language_context: LanguageContext | None = None,
-) -> dict[str, Any]:
-    offline_model = OFFLINE_OLLAMA_MODEL or DEFAULT_MODEL_NAME
-    resolved_user_message = _clean_text(user_message or prompt_text)
-    query_type = classify_query(resolved_user_message or prompt_text)
-    offline_notice = _build_offline_limit_reply(query_type, resolved_user_message, language_context=language_context)
-    if offline_notice:
-        reply_text = _finalize_reply_text(
-            offline_notice,
-            _build_runtime_identity_reply(runtime_used, language_context=language_context),
-        )
-        if stream_callback is not None:
-            stream_callback(reply_text)
-        return _build_provider_response(
-            reply_text,
-            runtime_used=runtime_used,
-            provider_used="local",
-            model_used=offline_model,
-            mode=mode,
-            language_context=language_context,
-        )
-
-    if _is_identity_query(resolved_user_message or prompt_text):
-        reply_text = _build_runtime_identity_reply(runtime_used, language_context=language_context)
-        if stream_callback is not None:
-            stream_callback(reply_text)
-        return _build_provider_response(
-            reply_text,
-            runtime_used=runtime_used,
-            provider_used="local",
-            model_used=offline_model,
-            mode=mode,
-            language_context=language_context,
-        )
-
     reply_text = generate_response(
         prompt_text,
         system_prompt=system_prompt,
@@ -678,15 +635,7 @@ def _run_live_web_fallback(
     if stream_callback is not None:
         stream_callback(f"{ONLINE_FALLBACK_NOTICE}\n\n")
 
-    local_response = _run_local_provider(
-        prompt_text=prompt_text,
-        system_prompt=system_prompt,
-        mode=mode,
-        runtime_used=runtime_used,
-        user_message=user_message,
-        stream_callback=stream_callback,
-        language_context=language_context,
-    )
+    
     local_response["notice"] = ONLINE_FALLBACK_NOTICE
     local_response["requested_runtime"] = runtime_used
     local_response["fallback_used"] = True
@@ -719,12 +668,7 @@ def dispatch_sonic_prompt(
 
     if normalized_mode == "summary":
         return _run_local_provider(
-            prompt_text=prompt_text,
-            system_prompt=system_prompt,
-            mode=normalized_mode,
-            runtime_used=selection.runtime_used,
-            user_message=resolved_live_web_query,
-            stream_callback=stream_callback,
+       
             language_context=resolved_language_context,
         )
 
@@ -750,15 +694,8 @@ def dispatch_sonic_prompt(
             language_context=resolved_language_context,
         )
 
-    return _run_local_provider(
-        prompt_text=prompt_text,
-        system_prompt=system_prompt,
-        mode=normalized_mode,
-        runtime_used="local",
-        user_message=resolved_live_web_query,
-        stream_callback=stream_callback,
-        language_context=resolved_language_context,
-    )
+
+    
 
     try:
         return _run_live_web_provider(
