@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SONIC">
+  <defs>
+    <linearGradient id="sonic-favicon-bg" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#101a2b" />
+      <stop offset="1" stop-color="#070c14" />
+    </linearGradient>
+    <linearGradient id="sonic-favicon-wave" x1="10" y1="8" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f5f8ff" />
+      <stop offset="0.45" stop-color="#79e0ff" />
+      <stop offset="1" stop-color="#4d7dff" />
+    </linearGradient>
+    <radialGradient id="sonic-favicon-glow" cx="0.34" cy="0.24" r="0.82">
+      <stop offset="0" stop-color="#79e0ff" stop-opacity="0.25" />
+      <stop offset="1" stop-color="#0b1020" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="url(#sonic-favicon-bg)" />
+  <rect x="4" y="4" width="56" height="56" rx="18" fill="url(#sonic-favicon-glow)" />
+  <path
+    d="M14 38C18 30 25 24 33 24C40 24 45 27 48 32C51 37 49 42 43 45C37 48 29 49 21 55"
+    fill="none"
+    stroke="url(#sonic-favicon-wave)"
+    stroke-width="4.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M15 27C20 21 28 18 36 19C42 20 47 23 50 27"
+    fill="none"
+    stroke="rgba(231, 238, 248, 0.72)"
+    stroke-width="3"
+    stroke-linecap="round"
+  />
+  <circle cx="47" cy="20" r="3.2" fill="url(#sonic-favicon-wave)" />
+</svg>

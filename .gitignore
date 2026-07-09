@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# Env secrets
+.env.local
+.env
+
+# Runtime data
+data/chats/chat_history.json
+data/chats/conversations.json
+data/chats/saved_notes.txt
+data/generated_images/*
+!data/generated_images/.gitkeep
+!data/chats/.gitkeep
+
+# Logs
+*.log
+
+# OS / editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
